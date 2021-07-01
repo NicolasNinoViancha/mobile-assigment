@@ -7,7 +7,11 @@
 //---------------------------------------------------------------------------------------------
 //-------------------------Componentes y dependencias React-Native-----------------------------
 import React from 'react';
-import { Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import { Text, View, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native';
+//-------------------------------------------Estilos-------------------------------------------
+import { HomeStyles } from '../styles/styles';
+import { colors } from '../styles/colors';
+import { moderateScale } from '../styles/scale';
 //--------------------------------------Constantes Globales------------------------------------
 const { width, height } = Dimensions.get('screen');
 //---------------------------------------------------------------------------------------------
@@ -19,15 +23,13 @@ const DetailsScreen = props => {
     //--------------------------------Diseño de cuerpo de App----------------------------------
     //-----------------------------------------------------------------------------------------
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <TouchableOpacity
-                style={{ flex: 0.1, backgroundColor: '#090909', justifyContent: 'center', alignItems: 'center', width: '80%' }}
-                onPress={() => navigation.goBack()}>
-                <Text style={{ color: '#FFFFFF', fontSize: 20 }}>
-                    go Home
-                </Text>
-            </TouchableOpacity>
-        </View>
+        <MyWallpaper>
+            <MyDrawMenuButton
+                title={'Details Characters'}
+                route={'Home'}
+                type={true}
+                navigation={navigation} />
+        </MyWallpaper>
     );
 };
 export default DetailsScreen;
