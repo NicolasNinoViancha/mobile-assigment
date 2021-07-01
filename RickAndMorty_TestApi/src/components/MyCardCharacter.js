@@ -1,11 +1,14 @@
 //---------------------------------------------------------------------------------------------
-//----------------------------Archivo de componente: MyCardVideosLike--------------------------
+//----------------------------Archivo de componente: MyCardCharacter---------------------------
 //---------------------------------------------------------------------------------------------
 //Nota : Este componente recibe las siguientes propiedades de configuracion :
 //      data >> Objeto de propiedades de modulo. Contiene las siguientes propiedades :
 //                  >> name        >> Nombre.
 //                  >> image       >> Url Imagen.
 //                  >> origin      >> Objeto origen.
+//                  >> status      >> Status.
+//                  >> species     >> Especie.
+//                  >> gender      >> Genero.
 //                  >> created     >> Fecha Creacion.
 
 //---------------------------------------------------------------------------------------------
@@ -23,15 +26,17 @@ import { moderateScale } from '../styles/scale';
 const { width, height } = Dimensions.get('screen');
 const FONTSIZE_TEXT_TITLE = width < 350 ? moderateScale(12) : moderateScale(16);
 const FONTSIZE_TEXT_LABEL = width < 350 ? moderateScale(10) : moderateScale(14);
-const ITEM_HEIGHT_SIZE = height * 0.5;
+const ITEM_HEIGHT_SIZE = height * 0.7;
 const ITEM_WIDTH_SIZE = width * 0.8;
 const ITEM_MARGIN_VERTICAL = height * 0.025;
 const ITEM_MARGIN_HORIZONTAL = width * 0.1;
 //---------------------------------------------------------------------------------------------
 //-----------------------------------Instancia de Componente-----------------------------------
 //---------------------------------------------------------------------------------------------
-const MyCardItem = (props) => {
-    const { name, image_url, origin, created, onPress } = props;//Recepcion Parametros >> Tarjeta Items.
+const MyCardCharacter = (props) => {
+    const { details } = props;
+    const { name, image, origin, created, status, species } = details;//Recepcion Parametros >> Tarjeta Items.
+    const { gender } = details;
     //-----------------------------------------------------------------------------------------
     //------------------------------Declaracion de Componentes---------------------------------
     //-----------------------------------------------------------------------------------------
@@ -79,21 +84,27 @@ const MyCardItem = (props) => {
     //-----------------------------------------------------------------------------------------
     return (
         <View style={[styles.ctnItem]}>
-            <TouchableOpacity
-                style={[styles.btnEventTouche]}
-                onPress={onPress} />
+            <Logo source={image} />
             <Header name={name} />
-            <Logo source={image_url} />
             <Detail
                 label={'Origin'}
                 value={origin.name} />
+            <Detail
+                label={'Status'}
+                value={status} />
+            <Detail
+                label={'Species'}
+                value={species} />
+            <Detail
+                label={'Gender'}
+                value={gender} />
             <Detail
                 label={'Created'}
                 value={created} />
         </View>
     );
 }
-export default MyCardItem;
+export default MyCardCharacter;
 //---------------------------------------------------------------------------------------------
 //------------------------------------Estilos de Componente------------------------------------
 //---------------------------------------------------------------------------------------------
@@ -119,18 +130,10 @@ const styles = StyleSheet.create({
         shadowRadius: 6.27,
         elevation: 10,
     },
-    //Estilo >> Boton de evento de touche
-    btnEventTouche: {
-        ...StyleSheet.absoluteFill,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'transparent',
-        zIndex: 10
-    },
     //Estilo >> Contenedor de header
     ctnHeader: {
         width: '90%',
-        flex: 0.15,
+        flex: 0.1,
         justifyContent: 'center',
         alignItems: 'flex-start',
     },
@@ -147,8 +150,10 @@ const styles = StyleSheet.create({
     },
     //Estilo >> Contenedor de logo
     ctnLogo: {
-        width: '90%',
-        flex: 0.65,
+        width: '100%',
+        flex: 0.52,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -156,13 +161,15 @@ const styles = StyleSheet.create({
     logo: {
         height: '100%',
         width: '100%',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
     },
     //Estilo >> Conteneodor de detalle
     ctnDetail: {
         width: '90%',
-        flex: 0.1,
+        flex: 0.08,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'flex-start',

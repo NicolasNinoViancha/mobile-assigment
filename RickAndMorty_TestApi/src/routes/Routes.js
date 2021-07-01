@@ -31,7 +31,9 @@ const Routes = (props) => {
         //------------------------------Declaracion de pantallas de APP------------------------
         //-------------------------------------------------------------------------------------
         <NavigationContainer>
-            <MainStack.Navigator initialRouteName="Home">
+            <MainStack.Navigator
+                initialRouteName="Home"
+                mode="card">
                 {/*----------------------Estructura de declaracion--------------------------*/}
                 {/*<Stack.Screen
                     name=nomb_screen

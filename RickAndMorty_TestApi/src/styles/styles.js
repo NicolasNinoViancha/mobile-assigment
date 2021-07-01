@@ -23,6 +23,14 @@ const HomeStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    //Estilo >> Contenedor Loading Data
+    ctnLoading: {
+        width,
+        height: height * 0.1,
+        backgroundColor: colors.White,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 
 });
 //-----------------------------------------------------------------------------------
@@ -31,10 +39,10 @@ const HomeStyles = StyleSheet.create({
 const DetailsStyles = StyleSheet.create({
     //Estilo >> Contenedor de pantalla general
     ctnScreen: {
-        flex: 0.78,
+        flex: 0.92,
         width,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
     },
 });
 export { HomeStyles, DetailsStyles }

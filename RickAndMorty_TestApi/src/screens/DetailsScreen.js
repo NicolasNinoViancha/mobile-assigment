@@ -7,18 +7,19 @@
 //---------------------------------------------------------------------------------------------
 //-------------------------Componentes y dependencias React-Native-----------------------------
 import React from 'react';
-import { Text, View, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native';
+import { View } from 'react-native';
+//-----------------------------------------Componentes-----------------------------------------
+import MyWallpaper from '../components/MyWallpaper';
+import MyDrawMenuButton from '../components/MyDrawMenuButton';
+import MyCardCharacter from '../components/MyCardCharacter';
 //-------------------------------------------Estilos-------------------------------------------
-import { HomeStyles } from '../styles/styles';
-import { colors } from '../styles/colors';
-import { moderateScale } from '../styles/scale';
-//--------------------------------------Constantes Globales------------------------------------
-const { width, height } = Dimensions.get('screen');
+import { DetailsStyles } from '../styles/styles';
 //---------------------------------------------------------------------------------------------
 //--------------------------------------Instancia de App---------------------------------------
 //---------------------------------------------------------------------------------------------
 const DetailsScreen = props => {
-    const { navigation } = props;
+    const { navigation, route } = props;
+    const { item } = route.params;
     //-----------------------------------------------------------------------------------------
     //--------------------------------Diseño de cuerpo de App----------------------------------
     //-----------------------------------------------------------------------------------------
@@ -29,6 +30,9 @@ const DetailsScreen = props => {
                 route={'Home'}
                 type={true}
                 navigation={navigation} />
+            <View style={[DetailsStyles.ctnScreen]}>
+                <MyCardCharacter details={item} />
+            </View>
         </MyWallpaper>
     );
 };

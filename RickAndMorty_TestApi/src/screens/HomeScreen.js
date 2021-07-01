@@ -6,8 +6,8 @@
 //---------------------------Importar dependencias y componentes-------------------------------
 //---------------------------------------------------------------------------------------------
 //-------------------------Componentes y dependencias React-Native-----------------------------
-import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity, FlatList, Dimensions, Image, Alert, VirtualizedList } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, FlatList, Dimensions, Alert } from 'react-native';
 //-----------------------------------------Componentes-----------------------------------------
 import MyWallpaper from '../components/MyWallpaper';
 import MyDrawMenuButton from '../components/MyDrawMenuButton';
@@ -18,7 +18,6 @@ import { character_get } from '../services/services';
 //-------------------------------------------Estilos-------------------------------------------
 import { HomeStyles } from '../styles/styles';
 import { colors } from '../styles/colors';
-import { moderateScale } from '../styles/scale';
 //--------------------------------------Constantes Globales------------------------------------
 const { width, height } = Dimensions.get('screen');
 //---------------------------------------------------------------------------------------------
@@ -30,10 +29,9 @@ const HomeScreen = props => {
     //--------------------------------Declaracion >> Estados-----------------------------------
     //-----------------------------------------------------------------------------------------
     const [render, setRender] = useState(false);//Estado >> First Render Data.
-    const [loading, setLoading] = useState(true);//Estado >> Loading Data.
+    const [loading, setLoading] = useState(false);//Estado >> Loading Data.
     const [data, setData] = useState([]);//Estado >> Datos Api.
     const [info, setInfo] = useState([]);//Estado >> Info Api.
-    const [page, setPage] = useState(1);//Estado >> Numero Pagina.
     //-----------------------------------------------------------------------------------------
     //--------------------------------Declaracion >> Funciones---------------------------------
     //-----------------------------------------------------------------------------------------
@@ -42,48 +40,68 @@ const HomeScreen = props => {
     const getData = async ({ page = '1' }) => {
         try {
             let response = await character_get({ page: page });
-            console.group('Datos Api >> Rick and Morty');
-            console.log(response.data.info);
-            //console.log(response.data.results);
-            console.groupEnd();
             if (response.data.info) {
+                console.log('Estoy dentro');
+                let characters = response.data.results;
+                if (page === '1')
+                    setData(characters)
+                else
+                    //setData(data.concat(characters));
+                    setData(prevState => [
+                        ...prevState,
+                        ...characters,
+                    ]);
+                //const newCharacters = [...currentCharacters, ...characters];
                 setInfo(response.data.info);
-                setData(response.data.results);
                 setRender(true);
+                setLoading(false);
             }
         } catch (e) {
             Alert.alert('Error', e);
         }
     }
+    //------------------------------Funcion >> Carga de datos----------------------------------
+    //Descripcion : Obtiene los datos de la siguiente pagina y los adiciona a los datos actuales.
+    const loadingMoreData = () => {
+        setLoading(true);
+        if (info.next !== null) {
+            let url = info.next;
+            let page = url.split('=');
+            getData({ page: page[1] });
+        }
+    }
     //------------------------------Funcion >> Seleccion Item----------------------------------
     //Descripcion : Genera la navegacion a la pagina de detalles.
     const selectItem = ({ item = {} }) => {
-        console.group('Item Seleccionado');
-        console.log(item.name);
-        console.groupEnd();
+        navigation.navigate('Details', { item: item });
     }
     //-----------------------------------------------------------------------------------------
     //------------------------------Declaracion >> Componentes---------------------------------
     //-----------------------------------------------------------------------------------------
     //-------------------------------Componente >> MyList--------------------------------------
     //Descripcion : Renderiza los datos obtenidos de la api en una lista desplazable.
-    const MyList = ({ data }) => {
+    const MyList = () => {
         return (
             <FlatList
+                initialScrollIndex={0}
                 showsVerticalScrollIndicator={false}
                 data={data}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={MyListItem}
                 initialNumToRender={20}
+                onEndReached={loadingMoreData}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={MyListFooter}
             />
         );
     }
     //----------------------------------Componente >> MyListItem-------------------------------
     //Descripcion : Renderiza el item de la lista.
     const MyListItem = ({ item }) => {
-        const { name, image, origin, created } = item;
+        const { name, image, origin, created, id } = item;
         return (
             <MyCardItem
+                key={id.toString()}
                 name={name}
                 image_url={image}
                 origin={origin}
@@ -92,14 +110,24 @@ const HomeScreen = props => {
             />
         );
     }
+    //----------------------------------Componente >> MyListFooter-----------------------------
+    //Descripcion : Renderiza el footer de la lista de personajes.
+    const MyListFooter = () => {
+        if (!loading)
+            return null
+        return (
+            <View style={[HomeStyles.ctnLoading]} >
+                <MyLoading color={colors.Blue} />
+            </View>
+        );
+    }
     //-----------------------------------------------------------------------------------------
     //--------------------------------Declaracion >> Effects-----------------------------------
     //-----------------------------------------------------------------------------------------
     //-------------------------------Effect >> Carga Datos Api---------------------------------
     useEffect(() => {
-        if (loading)
-            getData({ page: page });
-    }, [loading])
+        getData({ page: '1' });
+    }, [])
     //-----------------------------------------------------------------------------------------
     //--------------------------------Diseño de cuerpo de App----------------------------------
     //-----------------------------------------------------------------------------------------
@@ -111,7 +139,7 @@ const HomeScreen = props => {
                 route={''}
                 navigation={navigation} />
             <View style={[HomeStyles.ctnScreen]}>
-                {render && <MyList data={data} />}
+                {render && <MyList />}
                 {!render && <MyLoading color={colors.Blue} />}
             </View>
         </MyWallpaper>

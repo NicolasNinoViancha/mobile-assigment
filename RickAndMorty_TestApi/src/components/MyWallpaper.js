@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
     //Estilo de contenedor
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
         flexDirection: 'column',
         backgroundColor: colors.Gray,
     },
