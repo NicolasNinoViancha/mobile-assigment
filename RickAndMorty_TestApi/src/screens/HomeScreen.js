@@ -126,9 +126,9 @@ const HomeScreen = props => {
         if (id === 'empty-left' || id === 'empty-right')
             return <View style={{ height: EMPTY_ITEM_SIZE }} />
         //Especificacion de limites de desplazamiento de elementos
-        //Nota : La lista de videos con mas vistas se realiza con un efecto de enfoque que depende del valor
-        //      actual del scroll (Entiendase como 'scroll' al desplazamiento horizontal que
-        //      realiza el usuario con el fin de visualizar la lista de productos).
+        //Nota : La lista de items se realiza con un efecto de enfoque que depende del valor
+        //      actual del scroll (Entiendase como 'scroll' al desplazamiento vertical que
+        //      realiza el usuario con el fin de visualizar los items de lista).
         //      Para lograr el efecto de enfoque se realiza el calculo de los limites de los valores
         //      de desplazamiento del elemento.
         let FirstScroll, SecondScroll, ThirtScroll;//Scroll Position

@@ -23,7 +23,6 @@ const FONTSIZE_TEXT_TITLE = width < 350 ? moderateScale(12) : moderateScale(16);
 const FONTSIZE_TEXT_LABEL = width < 350 ? moderateScale(10) : moderateScale(14);
 const ITEM_HEIGHT_SIZE = height * 0.5;
 const ITEM_WIDTH_SIZE = width * 0.8;
-const ITEM_MARGIN_VERTICAL = height * 0;//0.025
 const ITEM_MARGIN_HORIZONTAL = width * 0.1;
 //---------------------------------------------------------------------------------------------
 //-----------------------------------Instancia de Componente-----------------------------------
@@ -102,7 +101,6 @@ const styles = StyleSheet.create({
         position: 'relative',
         width: ITEM_WIDTH_SIZE,
         height: ITEM_HEIGHT_SIZE,
-        marginVertical: ITEM_MARGIN_VERTICAL,
         marginHorizontal: ITEM_MARGIN_HORIZONTAL,
         justifyContent: 'flex-start',
         alignItems: 'center',
