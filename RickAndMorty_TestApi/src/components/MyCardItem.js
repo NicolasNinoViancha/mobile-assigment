@@ -14,24 +14,23 @@
 import React from 'react';
 import { Animated, StyleSheet, View, Dimensions, Text, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native';
-//-----------------------------------Librerias Adicionales-------------------------------------
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 //-------------------------------------------Estilos-------------------------------------------
 import { colors } from '../styles/colors';
 import { moderateScale } from '../styles/scale';
 //--------------------------------------Constantes Globales------------------------------------
-const { width, height } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('window');
 const FONTSIZE_TEXT_TITLE = width < 350 ? moderateScale(12) : moderateScale(16);
 const FONTSIZE_TEXT_LABEL = width < 350 ? moderateScale(10) : moderateScale(14);
 const ITEM_HEIGHT_SIZE = height * 0.5;
 const ITEM_WIDTH_SIZE = width * 0.8;
-const ITEM_MARGIN_VERTICAL = height * 0.025;
+const ITEM_MARGIN_VERTICAL = height * 0;//0.025
 const ITEM_MARGIN_HORIZONTAL = width * 0.1;
 //---------------------------------------------------------------------------------------------
 //-----------------------------------Instancia de Componente-----------------------------------
 //---------------------------------------------------------------------------------------------
 const MyCardItem = (props) => {
     const { name, image_url, origin, created, onPress } = props;//Recepcion Parametros >> Tarjeta Items.
+    const { scale, opacity } = props;
     //-----------------------------------------------------------------------------------------
     //------------------------------Declaracion de Componentes---------------------------------
     //-----------------------------------------------------------------------------------------
@@ -78,10 +77,10 @@ const MyCardItem = (props) => {
     //----------------------------Diseño de cuerpo de Componente-------------------------------
     //-----------------------------------------------------------------------------------------
     return (
-        <View style={[styles.ctnItem]}>
+        <Animated.View style={[styles.ctnItem, { opacity }, { transform: [{ scale }] }]}>
             <TouchableOpacity
                 style={[styles.btnEventTouche]}
-                onPress={onPress} />
+                onPress={() => props.select()} />
             <Header name={name} />
             <Logo source={image_url} />
             <Detail
@@ -90,7 +89,7 @@ const MyCardItem = (props) => {
             <Detail
                 label={'Created'}
                 value={created} />
-        </View>
+        </Animated.View>
     );
 }
 export default MyCardItem;
@@ -124,7 +123,6 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFill,
         width: '100%',
         height: '100%',
-        backgroundColor: 'transparent',
         zIndex: 10
     },
     //Estilo >> Contenedor de header

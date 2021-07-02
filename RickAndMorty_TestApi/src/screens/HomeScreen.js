@@ -7,7 +7,7 @@
 //---------------------------------------------------------------------------------------------
 //-------------------------Componentes y dependencias React-Native-----------------------------
 import React, { useEffect, useState, useRef } from 'react';
-import { View, FlatList, Dimensions, Alert } from 'react-native';
+import { View, FlatList, Dimensions, Alert, Animated } from 'react-native';
 //-----------------------------------------Componentes-----------------------------------------
 import MyWallpaper from '../components/MyWallpaper';
 import MyDrawMenuButton from '../components/MyDrawMenuButton';
@@ -19,12 +19,18 @@ import { character_get } from '../services/services';
 import { HomeStyles } from '../styles/styles';
 import { colors } from '../styles/colors';
 //--------------------------------------Constantes Globales------------------------------------
-const { width, height } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('window');
+const ITEM_HEIGHT_SIZE = height * 0.5;
+const EMPTY_ITEM_SIZE = (height - ITEM_HEIGHT_SIZE) / 2;//Tamaño >> Espacio entre items
 //---------------------------------------------------------------------------------------------
 //--------------------------------------Instancia de App---------------------------------------
 //---------------------------------------------------------------------------------------------
 const HomeScreen = props => {
     const { navigation } = props;
+    //-----------------------------------------------------------------------------------------
+    //-----------------------Inicializacion de variables de animacion--------------------------
+    //-----------------------------------------------------------------------------------------
+    const scrollY = useRef(new Animated.Value(0)).current;//Estado de desplazamiento de flatList
     //-----------------------------------------------------------------------------------------
     //--------------------------------Declaracion >> Estados-----------------------------------
     //-----------------------------------------------------------------------------------------
@@ -44,12 +50,14 @@ const HomeScreen = props => {
                 console.log('Estoy dentro');
                 let characters = response.data.results;
                 if (page === '1')
-                    setData(characters)
+                    setData([{ id: 'empty-left' }, ...characters, { id: 'empty-right' }]);
                 else
                     //setData(data.concat(characters));
                     setData(prevState => [
-                        ...prevState,
+                        { id: 'empty-left' },
+                        ...prevState.slice(1, prevState.length - 1),
                         ...characters,
+                        { id: 'empty-right' }
                     ]);
                 //const newCharacters = [...currentCharacters, ...characters];
                 setInfo(response.data.info);
@@ -82,31 +90,74 @@ const HomeScreen = props => {
     //Descripcion : Renderiza los datos obtenidos de la api en una lista desplazable.
     const MyList = () => {
         return (
-            <FlatList
-                initialScrollIndex={0}
+            <Animated.FlatList
+                pagingEnabled
+                bounces={false}
+                renderToHardwareTextureAndroid
+                onScroll={
+                    Animated.event([{
+                        nativeEvent: { contentOffset: { y: scrollY } }
+                    }], { useNativeDriver: true })
+                }
+                scrollEventThrottle={16}
+                //decelerationRate={Platform.OS === 'ios' ? 0 : 0.9}//Número de punto flotante que determina qué tan rápido se desacelera la vista de desplazamiento después de que el usuario levanta el dedo.
+                snapToInterval={ITEM_HEIGHT_SIZE}//La vista de desplazamiento se detenga en múltiplos del valor de snapToInterval.
+                snapToAlignment='center'//Define la relación del ajuste a la vista de desplazamiento.
+                disableIntervalMomentum={true}//la vista de desplazamiento se detiene en el siguiente índice.
                 showsVerticalScrollIndicator={false}
                 data={data}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={MyListItem}
+                renderItem={({ item, index }) =>
+                    <MyListItem item={item} index={index} scrollY={scrollY} />
+                }
                 initialNumToRender={20}
                 onEndReached={loadingMoreData}
                 onEndReachedThreshold={0.5}
                 ListFooterComponent={MyListFooter}
+
             />
         );
     }
     //----------------------------------Componente >> MyListItem-------------------------------
     //Descripcion : Renderiza el item de la lista.
-    const MyListItem = ({ item }) => {
+    const MyListItem = props => {
+        const { item, index, scrollY } = props;
         const { name, image, origin, created, id } = item;
+        //Condicional >> Espaciados Izquierdo/Derecho de lista.
+        if (id === 'empty-left' || id === 'empty-right')
+            return <View style={{ height: EMPTY_ITEM_SIZE }} />
+        //Especificacion de limites de desplazamiento de elementos
+        //Nota : La lista de videos con mas vistas se realiza con un efecto de enfoque que depende del valor
+        //      actual del scroll (Entiendase como 'scroll' al desplazamiento horizontal que
+        //      realiza el usuario con el fin de visualizar la lista de productos).
+        //      Para lograr el efecto de enfoque se realiza el calculo de los limites de los valores
+        //      de desplazamiento del elemento.
+        let FirstScroll, SecondScroll, ThirtScroll;//Scroll Position
+        FirstScroll = (index - 2) * ITEM_HEIGHT_SIZE;
+        SecondScroll = (index - 1) * ITEM_HEIGHT_SIZE;
+        ThirtScroll = (index) * ITEM_HEIGHT_SIZE;
+        const inputRange = [FirstScroll, SecondScroll, ThirtScroll];
+        const outputOpacity = [0.5, 1, 0.5];//Salida >> Opacidad de tarjeta.
+        const outputScale = [0.8, 1, 0.8];//Salida >> Escala de tarjeta.
+        const opacity = scrollY.interpolate({
+            inputRange,
+            outputRange: outputOpacity,
+            extrapolate: 'clamp',
+        });
+        const scale = scrollY.interpolate({
+            inputRange,
+            outputRange: outputScale,
+            extrapolate: 'clamp',
+        });
         return (
             <MyCardItem
-                key={id.toString()}
                 name={name}
                 image_url={image}
                 origin={origin}
                 created={created}
-                onPress={() => selectItem({ item: item })}
+                scale={scale}
+                opacity={opacity}
+                select={() => selectItem({ item: item })}
             />
         );
     }
