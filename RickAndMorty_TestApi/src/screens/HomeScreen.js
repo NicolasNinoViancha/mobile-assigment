@@ -7,7 +7,7 @@
 //---------------------------------------------------------------------------------------------
 //-------------------------Componentes y dependencias React-Native-----------------------------
 import React, { useEffect, useState, useRef } from 'react';
-import { View, FlatList, Dimensions, Alert, Animated } from 'react-native';
+import { View, Dimensions, Alert, Animated } from 'react-native';
 //-----------------------------------------Componentes-----------------------------------------
 import MyWallpaper from '../components/MyWallpaper';
 import MyDrawMenuButton from '../components/MyDrawMenuButton';
@@ -47,7 +47,6 @@ const HomeScreen = props => {
         try {
             let response = await character_get({ page: page });
             if (response.data.info) {
-                console.log('Estoy dentro');
                 let characters = response.data.results;
                 if (page === '1')
                     setData([{ id: 'empty-left' }, ...characters, { id: 'empty-right' }]);
