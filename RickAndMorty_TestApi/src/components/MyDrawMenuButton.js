@@ -83,6 +83,10 @@ const MyDrawMenuButton = props => {
                 type === true &&
                 <MyLogo source={Logo} />
             }
+            {
+                route !== '' &&
+                <MySpace ctnSpace={{ flex: 0.1, height: '100%' }} />
+            }
         </View>
     );
 }
