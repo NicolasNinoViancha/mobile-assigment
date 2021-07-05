@@ -25,11 +25,14 @@ const HomeStyles = StyleSheet.create({
     },
     //Estilo >> Contenedor Loading Data
     ctnLoading: {
+        position: 'absolute',
+        bottom: 0,
         width,
         height: height * 0.1,
-        backgroundColor: colors.White,
+        backgroundColor: colors.Blue,
         justifyContent: 'center',
         alignItems: 'center',
+        zIndex: 10
     }
 
 });

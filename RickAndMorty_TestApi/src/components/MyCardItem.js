@@ -76,10 +76,10 @@ const MyCardItem = (props) => {
     //----------------------------Diseño de cuerpo de Componente-------------------------------
     //-----------------------------------------------------------------------------------------
     return (
-        <Animated.View style={[styles.ctnItem, { opacity }, { transform: [{ scale }] }]}>
+        <Animated.View style={[styles.ctnItem, opacity, { transform: [scale] }]}>
             <TouchableOpacity
                 style={[styles.btnEventTouche]}
-                onPress={() => props.select()} />
+                onPress={onPress} />
             <Header name={name} />
             <Logo source={image_url} />
             <Detail

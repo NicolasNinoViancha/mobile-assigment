@@ -6,9 +6,9 @@
 //---------------------------Importar dependencias y componentes-------------------------------
 //---------------------------------------------------------------------------------------------
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 //---------------------------------------------------------------------------------------------
-//-----------------------------------Instancia de Componente-----------------------------------
+//-----------------------------------Instancia >> Componente-----------------------------------
 //---------------------------------------------------------------------------------------------
 const MyLoading = props => {
     const { color } = props;
@@ -16,7 +16,20 @@ const MyLoading = props => {
     //----------------------------Diseño de cuerpo de Componente-------------------------------
     //-----------------------------------------------------------------------------------------
     return (
-        <ActivityIndicator size="large" color={color} />
+        <View style={[styles.ctnLoading]}>
+            <ActivityIndicator size="large" color={color} />
+        </View>
     );
 }
 export default MyLoading;
+//---------------------------------------------------------------------------------------------
+//-----------------------------------Instancia >> Estilos--------------------------------------
+//---------------------------------------------------------------------------------------------
+const styles = StyleSheet.create({
+    ctnLoading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+});
